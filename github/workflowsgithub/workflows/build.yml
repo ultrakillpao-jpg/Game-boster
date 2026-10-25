@@ -1,0 +1,17 @@
+name: Build APK
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: unzip -q game-booster.zip
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v3
+        with: { gradle-version: 8.5 }
+      - run: gradle assembleDebug --no-daemon
+        working-directory: gb
+      - uses: actions/upload-artifact@v4
+        with: { name: GameBooster-APK, path: gb/app/build/outputs/apk/debug/*.apk }
